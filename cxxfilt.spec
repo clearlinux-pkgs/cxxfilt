@@ -4,7 +4,7 @@
 #
 Name     : cxxfilt
 Version  : 0.1.0
-Release  : 2
+Release  : 3
 URL      : https://files.pythonhosted.org/packages/d1/7f/15a38ca80ce8cf46810413d863a1f67b97edcafca2df8e1eaa35fbeec975/cxxfilt-0.1.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/d1/7f/15a38ca80ce8cf46810413d863a1f67b97edcafca2df8e1eaa35fbeec975/cxxfilt-0.1.0.tar.gz
 Summary  : Python interface to c++filt / abi::__cxa_demangle
@@ -12,7 +12,6 @@ Group    : Development/Tools
 License  : BSD-3-Clause
 Requires: cxxfilt-python3
 Requires: cxxfilt-python
-Requires: pytest
 BuildRequires : pbr
 BuildRequires : pip
 BuildRequires : python-dev
@@ -48,7 +47,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1526319785
+export SOURCE_DATE_EPOCH=1528564853
 python3 setup.py build -b py3
 
 %install
