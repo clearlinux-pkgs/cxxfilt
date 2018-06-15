@@ -14,7 +14,7 @@ Requires: cxxfilt-python3
 Requires: cxxfilt-python
 BuildRequires : pbr
 BuildRequires : pip
-BuildRequires : python-dev
+
 BuildRequires : python3-dev
 BuildRequires : setuptools
 
