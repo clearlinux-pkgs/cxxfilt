@@ -4,23 +4,87 @@
 #
 Name     : cxxfilt
 Version  : 0.2.0
-Release  : 16
+Release  : 17
 URL      : https://files.pythonhosted.org/packages/67/1f/de43c42666994fcc667fcd9a22d2c12c8c4825087c176eace66676c46bcf/cxxfilt-0.2.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/67/1f/de43c42666994fcc667fcd9a22d2c12c8c4825087c176eace66676c46bcf/cxxfilt-0.2.0.tar.gz
 Summary  : Python interface to c++filt / abi::__cxa_demangle
 Group    : Development/Tools
 License  : BSD-3-Clause
-Requires: cxxfilt-python3
-Requires: cxxfilt-python
+Requires: cxxfilt-python = %{version}-%{release}
+Requires: cxxfilt-python3 = %{version}-%{release}
 BuildRequires : buildreq-distutils3
 
 %description
+cxxfilt |travis|
 ================
+
+.. |travis| image:: https://travis-ci.org/afg984/python-cxxfilt.svg?branch=master
+    :target: https://travis-ci.org/afg984/python-cxxfilt
+
+Demangling C++ symbols in Python / interface to abi::__cxa_demangle
+
+Usage
+-----
+
+Install::
+
+    pip install cxxfilt
+
+Use ``demangle`` to demangle a C++ mangled symbol name::
+
+    >>> import cxxfilt
+    >>> cxxfilt.demangle('_ZNSt22condition_variable_anyD2Ev')
+    'std::condition_variable_any::~condition_variable_any()'
+
+Non-mangled name will be kept intact::
+
+    >>> cxxfilt.demangle('main')
+    'main'
+
+To demangle an internal symbol, use `external_only=False`::
+
+    >>> cxxfilt.demangle('N3foo12BarExceptionE')
+    'N3foo12BarExceptionE'
+    >>> cxxfilt.demangle('N3foo12BarExceptionE', external_only=False)
+    'foo::BarException'
+
+Invalid mangled names will trigger an ``InvalidName`` exception::
+
+    >>> cxxfilt.demangle('_ZQQ')
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/path/to/python-cxxfilt/cxxfilt/__init__.py", line 77, in demangle
+        return demangleb(mangled_name.encode()).decode()
+      File "/path/to/python-cxxfilt/cxxfilt/__init__.py", line 69, in demangleb
+        raise InvalidName(mangled_name)
+    cxxfilt.InvalidName: b'_ZQQ'
+
+Use ``demangleb`` to demangle name in ``bytes``::
+
+    >>> cxxfilt.demangleb(b'_ZNSt22condition_variable_anyD2Ev')
+    b'std::condition_variable_any::~condition_variable_any()'
+
+
+Supported environments
+----------------------
+
+Python 2.7 / 3.3+
+
+Tested on Arch Linux and FreeBSD. Should work on unix systems with libc and libc++/libstdc++
+
+Will not work on Windows.
+
+Testing
+-------
+
+run in shell::
+
+    pytest
 
 %package python
 Summary: python components for the cxxfilt package.
 Group: Default
-Requires: cxxfilt-python3
+Requires: cxxfilt-python3 = %{version}-%{release}
 
 %description python
 python components for the cxxfilt package.
@@ -30,6 +94,7 @@ python components for the cxxfilt package.
 Summary: python3 components for the cxxfilt package.
 Group: Default
 Requires: python3-core
+Provides: pypi(cxxfilt)
 
 %description python3
 python3 components for the cxxfilt package.
@@ -37,16 +102,25 @@ python3 components for the cxxfilt package.
 
 %prep
 %setup -q -n cxxfilt-0.2.0
+cd %{_builddir}/cxxfilt-0.2.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1536975033
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1582915099
+# -Werror is for werrorists
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
+export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
 
 %install
+export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
