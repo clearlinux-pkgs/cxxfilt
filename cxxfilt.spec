@@ -4,7 +4,7 @@
 #
 Name     : cxxfilt
 Version  : 0.2.2
-Release  : 20
+Release  : 21
 URL      : https://files.pythonhosted.org/packages/e0/aa/c1ae3629819cdcbb21b9a9fb5185df7a042592444c031198409523b4310a/cxxfilt-0.2.2.tar.gz
 Source0  : https://files.pythonhosted.org/packages/e0/aa/c1ae3629819cdcbb21b9a9fb5185df7a042592444c031198409523b4310a/cxxfilt-0.2.2.tar.gz
 Summary  : Python interface to c++filt / abi::__cxa_demangle
